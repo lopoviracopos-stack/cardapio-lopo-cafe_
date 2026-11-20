@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Cardápio Digital - Lopo Café</title>
+  <style>
+    :root {
+      --green-dark: #084C2E;
+      --green-mid: #0B5D38;
+      --green-light: #E6F2EC;
+      --green-border: #C4DFD1;
+      --gold: #C59B27;
+      --gold-light: #D4A938;
+      --bg-page: #F6F8F7;
+      --text-main: #18261F;
+      --text-muted: #52665C;
+      --white: #FFFFFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      line-height: 1.4;
+      padding-bottom: 48px;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(160deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      color: var(--white);
+      padding: 20px 16px 16px;
+      text-align: center;
+      border-bottom: 3px solid var(--gold);
+    }
+
+    .logo-wrap {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .logo-badge {
+      border: 2px solid var(--gold);
+      border-radius: 999px;
+      padding: 6px 20px;
+      background: rgba(8, 76, 46, 0.7);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-title {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--white);
+    }
+
+    .logo-sub {
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .header-note {
+      font-size: 12px;
+      color: #DCECE4;
+      margin-top: 6px;
+    }
+
+    /* Sticky Search + Tabs */
+    .sticky-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--white);
+      box-shadow: 0 2px 10px rgba(8, 76, 46, 0.08);
+      padding: 10px 12px 8px;
+    }
+
+    .search-box {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 36px 10px 36px;
+      border-radius: 12px;
+      border: 1.5px solid var(--green-border);
+      background: var(--bg-page);
+      font-size: 14px;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: var(--green-mid);
+      background: var(--white);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 14px;
+      pointer-events: none;
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--green-border);
+      color: var(--green-dark);
+      border: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: bold;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+    }
+
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      flex: 0 0 auto;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--green-border);
+      background: var(--green-light);
+      color: var(--green-dark);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--green-dark);
+      color: var(--white);
+      border-color: var(--green-dark);
+    }
+
+    /* Main Content */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 12px;
+    }
+
+    .category-section {
+      margin-bottom: 22px;
+      scroll-margin-top: 105px;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--gold);
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    .category-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--green-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .category-count {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--green-mid);
+      background: var(--green-light);
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    /* Banner Info Box */
+    .info-banner {
+      background: var(--green-light);
+      border-left: 4px solid var(--gold);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      font-size: 12.5px;
+      color: var(--green-dark);
+    }
+
+    .info-banner strong {
+      display: block;
+      margin-bottom: 2px;
+      color: var(--green-dark);
+    }
+
+    /* Item Card */
+    .item-card {
+      background: var(--white);
+      border: 1px solid #E3ECE7;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+      cursor: pointer;
+    }
+
+    .item-card:active {
+      background: #F4F9F6;
+    }
+
+    .item-info {
+      flex: 1;
+    }
+
+    .item-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 3px;
+    }
+
+    .item-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+    }
+
+    .item-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .tag {
+      font-size: 10.5px;
+      font-weight: 600;
+      background: var(--green-light);
+      color: var(--green-dark);
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .item-price {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--green-dark);
+      background: var(--green-light);
+      border: 1px solid var(--green-border);
+      padding: 5px 10px;
+      border-radius: 8px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .item-price.consult {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #7A5C0B;
+      background: #FDF7E6;
+      border-color: #EBD594;
+    }
+
+    /* Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 36, 22, 0.6);
+      z-index: 100;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      background: var(--white);
+      width: 100%;
+      max-width: 600px;
+      border-radius: 20px 20px 0 0;
+      padding: 20px 18px 28px;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: slideUp 0.2s ease-out;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-handle {
+      width: 40px;
+      height: 4px;
+      background: #CBD8D1;
+      border-radius: 2px;
+      margin: 0 auto 14px;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: var(--green-dark);
+    }
+
+    .modal-close {
+      background: var(--green-light);
+      border: none;
+      color: var(--green-dark);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .modal-price {
+      display: inline-block;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--green-dark);
+      background: var(--green-light);
+      padding: 4px 12px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+
+    .modal-desc {
+      font-size: 14px;
+      color: var(--text-main);
+      margin-bottom: 14px;
+    }
+
+    .modal-options-box {
+      background: var(--bg-page);
+      border: 1px solid var(--green-border);
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 13px;
+    }
+
+    .modal-options-box h4 {
+      color: var(--green-dark);
+      font-size: 12px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--text-muted);
+      display: none;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px 16px;
+      background: var(--green-dark);
+      color: #DCECE4;
+      font-size: 12px;
+      margin-top: 24px;
+      border-top: 3px solid var(--gold);
+    }
+
+    .footer strong {
+      color: var(--gold-light);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="logo-wrap">
+      <div class="logo-badge">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D4A938" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 8h1a4 4 0 1 1 0 8h-1"/>
+          <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/>
+          <line x1="6" y1="2" x2="6" y2="4"/>
+          <line x1="10" y1="2" x2="10" y2="4"/>
+          <line x1="14" y1="2" x2="14" y2="4"/>
+        </svg>
+        <span class="logo-title">LOPO CAFÉ</span>
+      </div>
+      <span class="logo-sub">Cardápio Digital</span>
+    </div>
+    <p class="header-note">Consulte os itens e faça seu pedido diretamente no balcão</p>
+  </header>
+
+  <nav class="sticky-nav">
+    <div class="search-box">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" class="search-input" placeholder="Buscar prato, café, bebida ou ingrediente..." />
+      <button id="clearBtn" class="clear-btn" aria-label="Limpar busca">&times;</button>
+    </div>
+    <div class="tabs" id="categoryTabs"></div>
+  </nav>
+
+  <main class="container" id="menuContainer"></main>
+
+  <div class="empty-state" id="emptyState">
+    <p><strong>Nenhum item encontrado</strong></p>
+    <p style="font-size: 13px; margin-top: 4px;">Tente buscar por outro nome ou ingrediente.</p>
+  </div>
+
+  <footer class="footer">
+    <strong>LOPO CAFÉ</strong><br />
+    Cardápio de consulta rápida &bull; Imagens meramente ilustrativas no cardápio físico
+  </footer>
+
+  <!-- Modal de Detalhes -->
+  <div class="modal-backdrop" id="itemModal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle"></h3>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-price" id="modalPrice"></div>
+      <p class="modal-desc" id="modalDesc"></p>
+      <div class="modal-options-box" id="modalOptionsBox" style="display:none;">
+        <h4 id="modalOptionsTitle">Opções e Personalização</h4>
+        <p id="modalOptionsText"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const MENU_DATA = [
+      {
+        id: "combos",
+        title: "Combos",
+        items: [
+          { name: "Padoca I", desc: "Pão na chapa + Café.", price: "R$ 23,00" },
+          { name: "Padoca II", desc: "Misto quente + Café coado.", price: "R$ 35,00" },
+          { name: "Pão de Queijo e Café Coado com Leite", desc: "Combinação clássica para o café da manhã ou lanche.", price: "R$ 23,00" },
+          { name: "Café Coado com Bolo", desc: "Fatia de bolo acompanhada de café coado.", price: "R$ 22,00" },
+          { name: "Lasanha à Bolonhesa e Salada Bouquet", desc: "Refeição completa com lasanha à bolonhesa e salada bouquet.", price: "R$ 70,00" },
+          { name: "Lanche Rústico + Coca-Cola", desc: "Escolha seu lanche rústico acompanhado de Coca-Cola.", price: "R$ 50,00", optionsTitle: "Opções de Lanche Rústico", options: "Ciabatta, Croissant, Parmesão ou Salaminho." }
+        ]
+      },
+      {
+        id: "tostex",
+        title: "Tostex",
+        bannerTitle: "Escolha seu pão:",
+        bannerText: "Francês • Forma branco • Forma integral",
+        items: [
+          { name: "Pão na Chapa", desc: "Pão com manteiga (70g).", price: "Consultar balcão", consult: true, tags: ["Francês", "Forma branco", "Forma integral"] },
+          { name: "Queijo", desc: "Mussarela (45g) e requeijão (10g).", price: "R$ 25,00", tags: ["Escolha o pão"] },
+          { name: "Margherita", desc: "Mussarela (45g), tomate (30g), molho pesto e requeijão (10g).", price: "R$ 26,00", tags: ["Escolha o pão"] },
+          { name: "Misto", desc: "Mussarela (30g), presunto (30g) e requeijão (10g).", price: "R$ 27,00", tags: ["Escolha o pão"] },
+          { name: "Banana e Queijo", desc: "Banana, queijo e requeijão.", price: "R$ 27,00", tags: ["Escolha o pão"] },
+          { name: "Salaminho", desc: "Salame fatiado e requeijão (10g).", price: "R$ 28,00", tags: ["Escolha o pão"] },
+          { name: "Bauru", desc: "Queijo, presunto, tomate e orégano.", price: "R$ 28,00", tags: ["Escolha o pão"] },
+          { name: "Misto Light", desc: "Peito de peru (30g), queijo minas (30g) e requeijão (10g).", price: "R$ 30,00", tags: ["Escolha o pão"] },
+          { name: "Bauru Light", desc: "Peito de peru (30g), queijo minas (20g), tomate (30g), orégano e requeijão (10g).", price: "R$ 30,00", tags: ["Escolha o pão"] },
+          { name: "Misto Triplo", desc: "Mussarela (60g), presunto (60g) e requeijão (20g).", price: "R$ 32,00", tags: ["Escolha o pão"] },
+          { name: "Frango Especial", desc: "Frango com pesto de manjericão (40g), cebola roxa e requeijão (10g).", price: "R$ 32,00", tags: ["Escolha o pão"] },
+          { name: "Croque Monsieur", desc: "Mussarela (60g), presunto (30g), molho bechamel gratinado e requeijão (20g).", price: "R$ 36,00", tags: ["Escolha o pão"] },
+          { name: "Croque Monsieur Ovo", desc: "Mussarela (60g), presunto (30g), bechamel gratinado, ovo e requeijão (20g).", price: "R$ 36,00", tags: ["Escolha o pão"] },
+          { name: "Caprese", desc: "Presunto parma (30g), tomate (20g), mussarela de búfala (30g) e molho de manjericão.", price: "Consultar balcão", consult: true, tags: ["Escolha o pão"] }
+        ]
+      },
+      {
+        id: "lanches-rusticos",
+        title: "Lanches Rústicos",
+        items: [
+          { name: "Ciabatta", desc: "Pão ciabatta recheado com queijo.", price: "R$ 38,00" },
+          { name: "Croissant", desc: "Croissant recheado com mussarela e presunto.", price: "R$ 38,00" },
+          { name: "Parmesão", desc: "Pão de parmesão com queijo prato (50g).", price: "R$ 38,00" },
+          { name: "Salaminho", desc: "Salame fatiado (45g) e queijo prato (50g).", price: "R$ 38,00" }
+        ]
+      },
+      {
+        id: "salgados",
+        title: "Salgados",
+        items: [
+          { name: "Pão de Queijo Tradicional", desc: "Assado na hora, crocante por fora e macio por dentro.", price: "Consultar balcão", consult: true },
+          { name: "Pão de Queijo com Nutella", desc: "Recheado com Nutella (15g).", price: "R$ 20,00" },
+          { name: "Pão de Queijo com Presunto e Queijo", desc: "Pão de queijo recheado com presunto e queijo.", price: "R$ 21,00" },
+          { name: "Cesta de Pães de Queijo", desc: "Porção de pães de queijo tradicionais.", price: "R$ 21,00" },
+          { name: "Esfiha (160g)", desc: "Sabores: Carne ou Frango.", price: "R$ 21,00", tags: ["Carne", "Frango"] },
+          { name: "Calzone", desc: "Sabores: Calabresa ou Pizza.", price: "R$ 21,00", tags: ["Calabresa", "Pizza"] },
+          { name: "Fogazza (150g)", desc: "Sabores: Carne ou Frango.", price: "R$ 21,00", tags: ["Carne", "Frango"] },
+          { name: "Coxinha (150g)", desc: "Sabores: Frango ou Costela.", price: "R$ 21,00", tags: ["Frango", "Costela"] }
+        ]
+      },
+      {
+        id: "pratos-quentes",
+        title: "Pratos Quentes",
+        items: [
+          { name: "Omelete", desc: "Com tomate confit (40g).", price: "R$ 25,00", optionsTitle: "Adicione ao Omelete", options: "Mussarela (30g), ovo frito, tomate (50g) ou presunto (40g)." },
+          { name: "Lasanha à Bolonhesa (400g)", desc: "Massa intercalada com molho à bolonhesa e queijo gratinado.", price: "Consultar balcão", consult: true },
+          { name: "Sopa do Dia (400ml)", desc: "Consulte o sabor disponível no dia no balcão.", price: "Consultar balcão", consult: true }
+        ]
+      },
+      {
+        id: "saladas",
+        title: "Saladas",
+        bannerTitle: "Escolha seu molho:",
+        bannerText: "Limão com azeite • Pesto • Mostarda e mel",
+        items: [
+          { name: "Salada Bouquet", desc: "Alface (140g), tomate (50g) e cenoura (25g).", price: "R$ 25,00", tags: ["Limão c/ azeite", "Pesto", "Mostarda e mel"] },
+          { name: "Salada Caseira", desc: "Peito de peru (40g), queijo (60g), frango desfiado (120g), alface (170g), cebola (25g), cenoura (30g) e tomate (50g).", price: "R$ 45,00", tags: ["Limão c/ azeite", "Pesto", "Mostarda e mel"] },
+          { name: "Salada Caesar", desc: "Molho Caesar (40g), alface (120g), tomate cereja (30g), croûton e frango em cubos (120g).", price: "R$ 45,00", tags: ["Molho Caesar"] },
+          { name: "Salada Caprese", desc: "Presunto parma (25g), mussarela de búfala (60g), tomate (60g) e alface (170g).", price: "R$ 50,00", tags: ["Limão c/ azeite", "Pesto", "Mostarda e mel"] },
+          { name: "Adicionais de Salada", desc: "Frango Especial (50g), Carne Desfiada (50g) ou Molho Caesar Extra.", price: "Consultar balcão", consult: true }
+        ]
+      },
+      {
+        id: "adicionais",
+        title: "Adicionais",
+        bannerTitle: "Complemente seu lanche:",
+        bannerText: "Opções extras para personalizar seu lanche ou omelete",
+        items: [
+          { name: "Mussarela, Presunto ou Queijo Minas", desc: "Porção adicional para complementar seu lanche.", price: "R$ 7,00" },
+          { name: "Carne Desfiada ou Frango Desfiado (50g)", desc: "Porção extra de proteína desfiada.", price: "R$ 7,00" },
+          { name: "Adicionais para Omelete", desc: "Mussarela (30g), ovo frito, tomate (50g) ou presunto (40g).", price: "Consultar balcão", consult: true }
+        ]
+      },
+      {
+        id: "bebidas-quentes",
+        title: "Bebidas Quentes",
+        items: [
+          { name: "Café Coado Curto", desc: "Café filtrado na hora.", price: "R$ 10,00" },
+          { name: "Café Coado Duplo", desc: "Dose dupla de café filtrado.", price: "R$ 12,00" },
+          { name: "Café Espresso (50ml)", desc: "Espresso tradicional encorpado.", price: "R$ 12,00" },
+          { name: "Café Espresso Curto", desc: "Extração curta e intensa.", price: "R$ 12,00" },
+          { name: "Café Coado com Leite (140ml)", desc: "Café filtrado combinado com leite vaporizado.", price: "R$ 15,00" },
+          { name: "Café Americano (90ml)", desc: "Espresso suavizado com água quente.", price: "R$ 15,00" },
+          { name: "Café Espresso Duplo (70ml)", desc: "Dose dupla de café espresso.", price: "R$ 15,00" },
+          { name: "Café Espresso com Leite", desc: "Espresso com leite cremoso.", price: "R$ 18,00" },
+          { name: "Cappuccino (140ml)", desc: "Espresso, leite vaporizado e crema.", price: "R$ 18,00" },
+          { name: "Cappuccino com Chocolate", desc: "Cappuccino tradicional com toque de chocolate.", price: "R$ 18,00" },
+          { name: "Achocolatado (140ml)", desc: "Leite quente cremoso com chocolate.", price: "R$ 18,00" }
+        ]
+      },
+      {
+        id: "bebidas-geladas",
+        title: "Bebidas Geladas",
+        items: [
+          { name: "Água (Com ou Sem Gás)", desc: "Garrafa gelada.", price: "R$ 12,00", tags: ["Sem gás", "Com gás"] },
+          { name: "Água de Coco (330ml)", desc: "Refrescante e gelada.", price: "R$ 13,00" },
+          { name: "Toddynho (200ml)", desc: "Bebida láctea sabor chocolate.", price: "R$ 13,00" },
+          { name: "Suco de Polpa (400ml)", desc: "Sabores: Manga, acerola, abacaxi, morango, graviola, goiaba ou maracujá.", price: "R$ 15,00", tags: ["7 sabores"] },
+          { name: "Suco de Laranja (400ml)", desc: "Suco natural de laranja.", price: "R$ 15,00" },
+          { name: "Suco em Lata (290ml)", desc: "Sabores variados em lata.", price: "R$ 15,00" },
+          { name: "Refrigerante Lata", desc: "Lata gelada (350ml).", price: "R$ 15,00" },
+          { name: "Ice Tea (450ml)", desc: "Chá gelado refrescante.", price: "R$ 15,00" },
+          { name: "Powerade", desc: "Bebida isotônica.", price: "R$ 15,00" },
+          { name: "Suco de Laranja com Mamão (400ml)", desc: "Combinação natural de laranja com mamão.", price: "R$ 18,00" },
+          { name: "Suco de Abacaxi com Hortelã (400ml)", desc: "Abacaxi batido com folhas frescas de hortelã.", price: "R$ 18,00" },
+          { name: "Vitamina (400ml)", desc: "Sabores: Morango, banana ou mamão.", price: "R$ 20,00" },
+          { name: "Café Gelado (400ml)", desc: "Café servido com gelo.", price: "R$ 20,00" },
+          { name: "Achocolatado Gelado", desc: "Chocolate gelado cremoso.", price: "R$ 22,00" },
+          { name: "Café com Leite Gelado (400ml)", desc: "Café e leite servidos gelados.", price: "R$ 22,00" },
+          { name: "Cerveja Long Neck", desc: "Garrafa long neck gelada.", price: "R$ 24,00" },
+          { name: "Energético (473ml)", desc: "Lata 473ml gelada.", price: "R$ 26,00" },
+          { name: "Smoothie de Whey (400ml)", desc: "Sabores: Morango, abacate ou banana.", price: "R$ 30,00", tags: ["Morango", "Abacate", "Banana"] }
+        ]
+      },
+      {
+        id: "sobremesas",
+        title: "Sobremesas",
+        items: [
+          { name: "Fatia de Bolo (100g)", desc: "Consulte os sabores do dia no balcão.", price: "R$ 18,00" },
+          { name: "Adicione Sorvete à Fatia de Bolo", desc: "Bola de sorvete para acompanhar sua fatia de bolo.", price: "+ R$ 5,00" },
+          { name: "Tostex Nutella", desc: "Pão tostado recheado com Nutella.", price: "R$ 25,00" },
+          { name: "Tostex Nutella & Banana", desc: "Pão tostado recheado com Nutella e banana.", price: "R$ 25,00" }
+        ]
+      }
+    ];
+
+    const tabsEl = document.getElementById("categoryTabs");
+    const menuEl = document.getElementById("menuContainer");
+    const searchInput = document.getElementById("searchInput");
+    const clearBtn = document.getElementById("clearBtn");
+    const emptyState = document.getElementById("emptyState");
+
+    const modal = document.getElementById("itemModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalPrice = document.getElementById("modalPrice");
+    const modalDesc = document.getElementById("modalDesc");
+    const modalOptionsBox = document.getElementById("modalOptionsBox");
+    const modalOptionsTitle = document.getElementById("modalOptionsTitle");
+    const modalOptionsText = document.getElementById("modalOptionsText");
+    const modalClose = document.getElementById("modalClose");
+
+    function renderTabs() {
+      tabsEl.innerHTML = MENU_DATA.map((cat, idx) => `
+        <button class="tab-btn ${idx === 0 ? "active" : ""}" data-target="${cat.id}">${cat.title}</button>
+      `).join("");
+
+      tabsEl.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const target = document.getElementById(btn.dataset.target);
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth" });
+          }
+          tabsEl.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+        });
+      });
+    }
+
+    function openModal(item) {
+      modalTitle.textContent = item.name;
+      modalPrice.textContent = item.price;
+      modalDesc.textContent = item.desc;
+
+      if (item.options) {
+        modalOptionsBox.style.display = "block";
+        modalOptionsTitle.textContent = item.optionsTitle || "Opções disponíveis";
+        modalOptionsText.textContent = item.options;
+      } else if (item.tags && item.tags.length > 0) {
+        modalOptionsBox.style.display = "block";
+        modalOptionsTitle.textContent = "Opções no balcão";
+        modalOptionsText.textContent = item.tags.join(" • ");
+      } else {
+        modalOptionsBox.style.display = "none";
+      }
+
+      modal.classList.add("open");
+    }
+
+    modalClose.addEventListener("click", () => modal.classList.remove("open"));
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.remove("open");
+    });
+
+    function renderMenu(filterText = "") {
+      const q = filterText.trim().toLowerCase();
+      menuEl.innerHTML = "";
+      let totalVisible = 0;
+
+      MENU_DATA.forEach(cat => {
+        const filteredItems = cat.items.filter(item => {
+          if (!q) return true;
+          const inName = item.name.toLowerCase().includes(q);
+          const inDesc = item.desc.toLowerCase().includes(q);
+          const inCat = cat.title.toLowerCase().includes(q);
+          const inTags = (item.tags || []).some(t => t.toLowerCase().includes(q));
+          return inName || inDesc || inCat || inTags;
+        });
+
+        if (filteredItems.length === 0) return;
+        totalVisible += filteredItems.length;
+
+        const section = document.createElement("section");
+        section.className = "category-section";
+        section.id = cat.id;
+
+        let bannerHtml = "";
+        if (cat.bannerTitle && !q) {
+          bannerHtml = `
+            <div class="info-banner">
+              <strong>${cat.bannerTitle}</strong>
+              <span>${cat.bannerText}</span>
+            </div>
+          `;
+        }
+
+        section.innerHTML = `
+          <div class="category-header">
+            <h2 class="category-title">${cat.title}</h2>
+            <span class="category-count">${filteredItems.length} ${filteredItems.length === 1 ? "item" : "itens"}</span>
+          </div>
+          ${bannerHtml}
+        `;
+
+        filteredItems.forEach(item => {
+          const card = document.createElement("div");
+          card.className = "item-card";
+          const tagsHtml = (item.tags && item.tags.length)
+            ? `<div class="item-tags">${item.tags.map(t => `<span class="tag">${t}</span>`).join("")}</div>`
+            : "";
+
+          card.innerHTML = `
+            <div class="item-info">
+              <div class="item-name">${item.name}</div>
+              <div class="item-desc">${item.desc}</div>
+              ${tagsHtml}
+            </div>
+            <div class="item-price ${item.consult ? "consult" : ""}">${item.price}</div>
+          `;
+          card.addEventListener("click", () => openModal(item));
+          section.appendChild(card);
+        });
+
+        menuEl.appendChild(section);
+      });
+
+      emptyState.style.display = totalVisible === 0 ? "block" : "none";
+    }
+
+    searchInput.addEventListener("input", (e) => {
+      const val = e.target.value;
+      clearBtn.style.display = val ? "flex" : "none";
+      renderMenu(val);
+    });
+
+    clearBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      clearBtn.style.display = "none";
+      renderMenu("");
+      searchInput.focus();
+    });
+
+    renderTabs();
+    renderMenu();
+  </script>
+</body>
+</html>
